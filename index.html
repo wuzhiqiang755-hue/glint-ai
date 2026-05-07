@@ -55,23 +55,43 @@
         </button>
     </footer>
 
-    <script>
-        function generate() {
+   <script>
+        async function generate() {
             const btn = document.getElementById('btn');
             const result = document.getElementById('result-container');
             const text = document.getElementById('result-text');
-            
-            btn.innerText = "生成中...";
-            // 模拟 API 调用逻辑
-            setTimeout(() => {
+            const keywords = document.getElementById('keywords').value;
+            const style = document.getElementById('style').value;
+
+            if (!keywords) return alert("请输入关键词");
+
+            btn.innerText = "正在泛起微光...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ keywords, style })
+                });
+                
+                const data = await response.json();
                 result.classList.remove('hidden');
-                text.innerText = "「咖啡的苦，是清醒的入场券。☕️✨」\n\n#生活碎片 #极简主义";
-                btn.innerText = "再次生成";
-            }, 1500);
+                text.innerText = data.text;
+            } catch (error) {
+                alert("能量暂时断开，请稍后再试");
+                console.error(error);
+            } finally {
+                btn.innerText = "生成文案";
+                btn.disabled = false;
+            }
         }
 
         function copyText() {
-            alert("已复制到剪贴板");
+            const text = document.getElementById('result-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("已复制到剪贴板");
+            });
         }
     </script>
 </body>
