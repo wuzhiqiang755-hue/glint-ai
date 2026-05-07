@@ -14,13 +14,11 @@
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-6">
     
-    <!-- 顶部 Logo -->
     <header class="mb-16 text-center">
         <h1 class="text-4xl font-light tracking-[0.2em] text-slate-900">GLINT</h1>
         <p class="text-xs text-slate-400 mt-2 tracking-widest">让文字泛起微光</p>
     </header>
 
-    <!-- 输入区 -->
     <main class="w-full max-w-md">
         <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
             <textarea id="keywords" rows="3" 
@@ -41,14 +39,12 @@
             </div>
         </div>
 
-        <!-- 结果展示区（默认隐藏） -->
         <div id="result-container" class="hidden mt-8 p-6 bg-slate-50 rounded-xl border-l-2 border-slate-900">
             <p id="result-text" class="text-sm leading-relaxed text-slate-700 font-light"></p>
             <button onclick="copyText()" class="mt-4 text-[10px] uppercase tracking-tighter text-slate-400 hover:text-black">点击复制</button>
         </div>
     </main>
 
-    <!-- 页脚：支付入口预览 -->
     <footer class="mt-20">
     <div class="flex flex-col items-center gap-2">
         <p class="text-[10px] text-slate-400 tracking-widest">能量已耗尽？</p>
@@ -93,6 +89,21 @@
 
             if (!keywords) return alert("请输入关键词");
 
+            // --- 新增：每日3次免费限制逻辑 ---
+            const FREE_LIMIT = 3;
+            const today = new Date().toLocaleDateString();
+            let usage = JSON.parse(localStorage.getItem('glint_usage') || '{"date":"","count":0}');
+            
+            if (usage.date !== today) {
+                usage = { date: today, count: 0 };
+            }
+
+            if (usage.count >= FREE_LIMIT) {
+                showPayment(); // 超过次数直接弹出支付框
+                return;
+            }
+            // --- 限制逻辑结束 ---
+
             btn.innerText = "正在泛起微光...";
             btn.disabled = true;
 
@@ -104,8 +115,18 @@
                 });
                 
                 const data = await response.json();
-                result.classList.remove('hidden');
-                text.innerText = data.text;
+                
+                if (response.ok) {
+                    result.classList.remove('hidden');
+                    text.innerText = data.text;
+                    
+                    // 生成成功后，增加次数并保存
+                    usage.count++;
+                    localStorage.setItem('glint_usage', JSON.stringify(usage));
+                } else {
+                    throw new Error();
+                }
+
             } catch (error) {
                 alert("能量暂时断开，请稍后再试");
                 console.error(error);
@@ -121,13 +142,14 @@
                 alert("已复制到剪贴板");
             });
         }
-       function showPayment() {
-    document.getElementById('payment-modal').classList.remove('hidden');
-}
 
-function closePayment() {
-    document.getElementById('payment-modal').classList.add('hidden');
-}
+        function showPayment() {
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePayment() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
