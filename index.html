@@ -50,10 +50,34 @@
 
     <!-- 页脚：支付入口预览 -->
     <footer class="mt-20">
-        <button class="text-[10px] text-slate-300 tracking-widest hover:text-slate-900 transition">
-            剩余次数: 3 | 获取更多额度
+    <div class="flex flex-col items-center gap-2">
+        <p class="text-[10px] text-slate-400 tracking-widest">能量已耗尽？</p>
+        <button onclick="showPayment()" class="text-xs text-black border border-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition duration-300">
+            补充额度 ($0.99 / 20次)
         </button>
-    </footer>
+    </div>
+</footer>
+
+<div id="payment-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+        <h3 class="text-lg font-bold mb-2">获取更多能量</h3>
+        <p class="text-sm text-slate-600 mb-6">
+            支付 <span class="font-bold text-black">7 元</span><br>
+            即可获得 20 次高级感文案生成额度
+        </p>
+        
+        <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl py-12 mb-6">
+            <p class="text-xs text-slate-400">请截图你的支付宝收款码<br>上传到 GitHub 后在此处展示</p>
+            </div>
+
+        <p class="text-[10px] text-slate-400 mb-6 italic">付款时请备注你的微信号或联系方式<br>作者将手动为你补给能量</p>
+        
+        <div class="flex flex-col gap-2">
+            <button onclick="closePayment()" class="w-full py-3 bg-black text-white rounded-xl text-sm font-medium">已完成支付</button>
+            <button onclick="closePayment()" class="text-slate-400 text-xs py-2">稍后再说</button>
+        </div>
+    </div>
+</div>
 
    <script>
         async function generate() {
@@ -93,6 +117,13 @@
                 alert("已复制到剪贴板");
             });
         }
+       function showPayment() {
+    document.getElementById('payment-modal').classList.remove('hidden');
+}
+
+function closePayment() {
+    document.getElementById('payment-modal').classList.add('hidden');
+}
     </script>
 </body>
 </html>
