@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLINT | 极简配文助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F9F9F9; }
+        .glint-input { transition: all 0.3s ease; }
+        .glint-input:focus { border-color: #1A1A1A; transform: translateY(-2px); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
+    
+    <!-- 顶部 Logo -->
+    <header class="mb-16 text-center">
+        <h1 class="text-4xl font-light tracking-[0.2em] text-slate-900">GLINT</h1>
+        <p class="text-xs text-slate-400 mt-2 tracking-widest">让文字泛起微光</p>
+    </header>
+
+    <!-- 输入区 -->
+    <main class="w-full max-w-md">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <textarea id="keywords" rows="3" 
+                class="glint-input w-full border-b border-gray-200 outline-none py-2 text-lg font-light placeholder-gray-300 resize-none" 
+                placeholder="输入关键词（如：咖啡、雨天、心情）..."></textarea>
+            
+            <div class="flex justify-between mt-8 items-center">
+                <select id="style" class="bg-transparent text-sm font-light text-slate-500 outline-none cursor-pointer">
+                    <option value="chill">极简小清新</option>
+                    <option value="luxury">凡尔赛高级感</option>
+                    <option value="humor">幽默段子</option>
+                    <option value="emo">深夜emo</option>
+                </select>
+                
+                <button onclick="generate()" id="btn" class="px-8 py-2 bg-black text-white text-xs tracking-widest rounded-full hover:bg-slate-800 transition-all active:scale-95">
+                    生成文案
+                </button>
+            </div>
+        </div>
+
+        <!-- 结果展示区（默认隐藏） -->
+        <div id="result-container" class="hidden mt-8 p-6 bg-slate-50 rounded-xl border-l-2 border-slate-900">
+            <p id="result-text" class="text-sm leading-relaxed text-slate-700 font-light"></p>
+            <button onclick="copyText()" class="mt-4 text-[10px] uppercase tracking-tighter text-slate-400 hover:text-black">点击复制</button>
+        </div>
+    </main>
+
+    <!-- 页脚：支付入口预览 -->
+    <footer class="mt-20">
+        <button class="text-[10px] text-slate-300 tracking-widest hover:text-slate-900 transition">
+            剩余次数: 3 | 获取更多额度
+        </button>
+    </footer>
+
+    <script>
+        function generate() {
+            const btn = document.getElementById('btn');
+            const result = document.getElementById('result-container');
+            const text = document.getElementById('result-text');
+            
+            btn.innerText = "生成中...";
+            // 模拟 API 调用逻辑
+            setTimeout(() => {
+                result.classList.remove('hidden');
+                text.innerText = "「咖啡的苦，是清醒的入场券。☕️✨」\n\n#生活碎片 #极简主义";
+                btn.innerText = "再次生成";
+            }, 1500);
+        }
+
+        function copyText() {
+            alert("已复制到剪贴板");
+        }
+    </script>
+</body>
+</html>
